@@ -3,7 +3,7 @@
 Title
     - Food review extraction summerization using unsupervised learning
 Description
-    - Extraction summerization on amazon food review data opened by Kaggle
+    - Extraction summerization on amazone food review data opened by Kaggle
 """
 
 import io
@@ -21,8 +21,6 @@ from nltk.tokenize import sent_tokenize
 import gensim.models.keyedvectors as word2vec
 import ray
 ray.init()
-from sklearn.cluster import KMeans 
-from sklearn.metrics import pairwise_distances_argmin_min
 
 #nltk.download('punkt')
 
@@ -59,38 +57,11 @@ def loadEmbeddingMatrix(typeToLoad):
     gc.collect()
     return embeddings_index # embedding_matrix
 
-def calcaulte_sentence_embedding(wordList, emb_index):
-    emb_li = []
-    for k in wordList:
-        embedding_vector = emb_index.get(k)
-        if embedding_vector is not None:
-            if(len(embedding_vector) == 25):
-                emb_li.append(list(embedding_vector))
-    
-    mean_arr = np.array(emb_li)
-    return np.mean(mean_arr, axis=0)
+def calcaulte_sentence_embedding(wordList):
+    pass
 
 def get_sent_embedding(mylist):
-    """Assign the embedding on sentence using pre-defined function above and preprocess"""
-    sent_emb = []
-    n_sentences = len(mylist)
-    for i in mylist:
-        i = i.lower()
-        wL = re.sub(" [^\w] ", " ", i).split()
-        if (len(wL)>0):
-            for k in wL:
-                if(k in string.punctuation):
-                    wL.remove(k)
-            if(len(wL) <=2):
-                continue
-        else:
-            print("Sentence Removed: ", i)
-            continue
-
-        res = list(calcaulte_sentence_embedding(wL))
-        sent_emb.append(res)
-    return np.array(sent_emb)
-    
+    pass
 
 
 
@@ -121,37 +92,6 @@ def main():
     list_tokenized_train = tokenizer.texts_to_sequences(list_sentences_train)
     maxlen = 200
     X_t = pad_sequences(list_tokenized_train, maxlen=maxlen)
-    
-    emb_index = loadEmbeddingMatrix('glove')
-
-    a = calcaulte_sentence_embedding(emb_index)
-
-    how_many_summaries = 5000
-
-    summary = [None] * how_many_summaries
-    for rv in range(how_many_summaries):
-        review = df['sent_tokens'].iloc[rv]
-        enc_email = get_sent_embedding(review)
-        if(len(enc_email)>0):
-            n_cluster = int(np.ceil(len(enc_email)**0.5))
-            kmeans = KMeans(n_cluster=n_cluster, random_state=0)
-            kmenas = kmeans.fit(enc_email)
-
-            avg = []
-            closet = []
-            for j in range(n_cluster):
-                idx = np.where(kmenas.labels_ == j)[0]
-                avg.append(np.mean(idx))
-
-            closet, _ = pairwise_distances_argmin_min(kmenas.cluster_centers_, enc_email)
-            ordering = sorted(range(n_cluster), key=lambda k: avg[k])
-            summary[rv] = ' '.join([review[closet[idx]] for idx in ordering])
-        else:
-            print ("This is not a valid review")
-
-    df_5000 = df.iloc[:5000]
-    df_5000['PredictedSummary'] = summary
-    df_5000[['Text', 'PredictedSummary']].to_csv('top_5000_summary.csv')
     
 
 if __name__ == "__main__":
