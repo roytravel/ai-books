@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/roytravel/github/gym-for-training-ai/11. building-chatbot-with-python/horoscope_bot/./models/nlu/default/horoscopebot/intent_classifier_tensorflow_embedding.ckpt"
+all_model_checkpoint_paths: "/home/roytravel/github/gym-for-training-ai/11. building-chatbot-with-python/horoscope_bot/./models/nlu/default/horoscopebot/intent_classifier_tensorflow_embedding.ckpt"
