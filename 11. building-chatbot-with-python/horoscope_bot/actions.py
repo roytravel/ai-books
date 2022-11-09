@@ -13,14 +13,14 @@ class GetTodaysHoroscope(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_horoscope_sign = tracker.get_slot('horoscope_sign')
-        base_url = http://horoscope-api.herokuapp.com/horoscope/{day}/{sign}
+        # base_url = "http://horoscope-api.herokuapp.com/horoscope/{day}/{sign}"
+        base_url = "http://localhost:5000/horoscope/{day}/{sign}"
         url = base_url.format(**{'day':"today", 'sign':user_horoscope_sign})
-        # http://horoscope-api.herokuapp.com/horoscope/today/capricorn
-        res = requests.get(url)
-        todays_horoscope = res.json()['horoscope']
-        response = "Your today's horoscope:\n{}".format(todays_horoscope)
-
-        dispatcher.utter_message(response)
+        res = requests.get(url).text
+        print (res)
+        # todays_horoscope = res.json()['horoscope']
+        # response = "Your today's horoscope:\n{}".format(todays_horoscope)
+        dispatcher.utter_message(res)
         return [SlotSet("horoscope_sign", user_horoscope_sign)]
 
 class SubscribeUser(Action):

@@ -1,7 +1,4 @@
 """ Training a chatbot agent """
-
-#import ruamel
-#warnings.simplefilter('ignore', ruamel.yaml.error.UnsafeLoaderWarning)
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
